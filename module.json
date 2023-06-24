@@ -1,0 +1,23 @@
+{
+  "title": "Enchiridion",
+  "description": "Enchiridion Content Organizer",
+  "version": "0.9",
+  "scripts": [
+    "enchiridion-script.js",
+    "emoji-button/emoji-button.js",
+    "jquery.singleclick.js",
+    "jquery-ui.js"
+  ],
+  "styles": [
+    "enchiridion-style.css",
+    "jquery-ui.css"
+  ],
+  "url": "https://github.com/reggiebritten/Enchiridion",
+  "manifest": "https://github.com/reggiebritten/Enchiridion/releases/download/latest/module.json",
+  "download": "https://github.com/reggiebritten/Enchiridion/releases/download/latest/enchiridion.zip",
+  "id": "enchiridion",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  }
+}

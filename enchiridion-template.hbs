@@ -1,0 +1,182 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+    <nav class = 'enchiridion-nav'>
+        <ul class = 'enchiridion-tree'>
+            <li class="header-search flexrow">
+                {{#if isGM}}<a class="fas fa-plus" data-tooltip="Create a New Document"></a>{{/if}}
+                <i class="fas fa-search"></i>
+                <input class="enchiridion-search" type="text" name="search" value="{{!--enchiridionFilter--}}" placeholder="Search" autocomplete="off">
+                <div class="enchiridion-search-controls">
+                    <a class="fa fa-memo" data-tooltip="Include Summary" data-toggle="summary"></a>
+                    <a class="fas fa-sticky-note" data-tooltip="Include Note Contents" data-toggle="notes"></a>
+                    <a class="fas fa-image" data-tooltip="Include Asset Names" data-toggle="assets"></a>
+                    <a class="fa fa-suitcase" data-tooltip="Include Owned Item Names" data-toggle="items"></a>
+                    {{!--<a class="far fa-font-case" data-tooltip="Case Sensitive" data-toggle="case"></a>
+                    <a class="fas fa-passport" data-tooltip="Include Names" data-toggle="names"></a>--}}
+                </div>
+            </li>
+            {{#each roots}}
+                 {{> "modules/enchiridion/templates/enchiridion-branch.hbs" document=this}}
+            {{/each}}
+        </ul>
+    </nav>
+
+
+    <main class='enchiridion-main'>
+        
+        {{!-- <div class = 'enchiridion-resize'></div> --}}
+        <div class = 'enchiridion-content'>
+
+        <nav class="enchiridion-tabs tabs">
+            <a style="display: none;" class="fas fa-arrow-left enchiridion-back-button" ></a>
+            {{#each openTabs as |document|}}
+                <li class="enchiridion-tab {{document.enchiridionActive}} enchiridion-document enchiridion-drag enchiridion-drop" data-drop-type="tab" data-tab="{{document.uuid}}" data-uuid="{{document.uuid}}">
+                        <h4><a class = "icon">{{document.enchiridionIcon}}</a><a class = "close enchiridion-close-tab">❌</a><a class="tab-content enchiridion-drop" data-drop-type="tab">{{document.name}}</a></h4>
+                </li>
+            {{/each}}
+        </nav>
+        <section class="enchiridion-body">
+            {{#each openTabs as |document|}}
+                <div class="tab {{document.enchiridionActive}} enchiridion-document form-group enchiridion-drop" data-drop-type="asset" data-tab="{{document.uuid}}" data-uuid="{{document.uuid}}">		
+                    <div class="enchiridion-header">
+                        {{#if document.img}}
+                            <div class = 'crop'>
+                                <img class="enchiridion-main-image cover enchiridion-drag enchiridion-drop" data-drop-type="mainImage" src="{{document.img}}" height="100%" width="100%"/>
+                            </div>
+                        {{/if}}
+                        {{!-- {{#if document.prototypeToken.texture.src}}
+                            <div class = 'crop'>
+                                <img class="enchiridion-main-image cover enchiridion-drag enchiridion-drop" data-drop-type="mainImage" src="{{document.prototypeToken.texture.src}}" data-tooltip="{{document.name}} Token - Click to popout the image." height="100%" width="100%"/>
+                            </div>
+                        {{/if}} --}}
+                        <div class = 'enchiridion-banner'>
+                            <h1 class="enchiridion-title">
+                                <div class="enchiridion-main-icon enchiridion-icon enchiridion-icon-change"><a>{{document.enchiridionIcon}}</a></div>
+                                <div class = 'enchiridion-open-document enchiridion-name enchiridion-drag'><a>{{document.name}}</a></div>
+                                {{#if document.pages}}
+                                    <a class="fas fa-file-circle-plus enchiridion-new-page"></a>
+                                {{/if}}
+                            </h1>
+    
+                            <div class = 'enchiridion-references'>
+                                {{#if document.enchiridionParent}}
+                                    <span data-tooltip="Container" class="enchiridion-reference-section">🔼<a class="enchiridion-open-tab enchiridion-drop enchiridion-drag" data-drop-type="references" data-uuid="{{document.enchiridionParent.uuid}}"><span class = "enchiridion-icon">{{document.enchiridionParent.enchiridionIcon}}</span> {{document.enchiridionParent.name}} </a></span>
+                                {{/if}}
+                                {{#if document.enchiridionChildren}}
+                                    <span data-tooltip="Contents" class="enchiridion-reference-section">🔽
+                                        {{#each document.enchiridionChildren}}
+                                            <a class="enchiridion-open-tab enchiridion-drop enchiridion-drag" data-drop-type="references" data-uuid="{{this.uuid}}"><span class = "enchiridion-icon">{{this.enchiridionIcon}}</span> {{this.name}} </a>
+                                        {{/each}}
+                                    </span>
+                                {{/if}}
+                                {{#if document.enchiridionReferences}}
+                                    <span data-tooltip="Incoming References" class="enchiridion-reference-section">◀️
+                                        {{#each document.enchiridionReferences}}
+                                            <a class="enchiridion-open-tab enchiridion-drop enchiridion-drag" data-drop-type="references" data-uuid="{{this.uuid}}"><span class = "enchiridion-icon">{{this.enchiridionIcon}}</span> {{this.name}} </a>
+                                        {{/each}}
+                                    </span>
+                                {{/if}}
+                                {{#if document.enchiridionOutgoingRefernces}}
+                                    <span data-tooltip="Outgoing References" class="enchiridion-reference-section">▶️
+                                    {{#each document.enchiridionOutgoingRefernces}}
+                                        <a class="enchiridion-open-tab enchiridion-drop enchiridion-drag" data-drop-type="references" data-uuid="{{this.uuid}}"><span class = "enchiridion-icon">{{this.enchiridionIcon}}</span> {{this.name}} </a>
+                                    {{/each}}
+                                    
+                                    </span>
+                                {{/if}}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{#unless document.pages}}
+                        <div class="enchiridion-summary">
+                            <h2>Summary</h2>
+                            {{#unless document.disableSummary}}<div class="enchiridion-summary-input">{{/unless}}
+                                {{{document.enchiridionSummary}}}
+                            {{#unless document.disableSummary}}</div>{{/unless}}
+                        </div>
+                    {{/unless}}
+                    {{#if document.pages}}
+                        {{#each document.pages as |page|}}
+                            {{#if page.visible}}
+                            <hr>
+                            <div class="page" data-uuid="{{page.uuid}}">		
+                                <h2><input type = "text" class="enchiridion-page-name-input" value = "{{{page.name}}}"></input><div><a class="fas fa-trash enchiridion-delete-page" title = "Delete Page"></a></div></h2>
+                                {{#if page.src}}<img class="enchidirion-page-image" src="{{page.src}}" data-type="{{page.type}}"  height="100%" width="100%"/>{{/if}}
+                                {{#unless page.src}}<div class="enchiridion-page-input">{{{page.text.content}}}</div>{{/unless}}
+                                
+                                {{!-- {{log page}} --}}
+                            </div>
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
+
+                    <hr>
+
+                    <div class="enchiridion-notes">
+                        <h2>Notes <a class="fas fa-message-plus enchiridion-new-note" data-tooltip="Create a new note"></a></h2>
+                        <ul class = "enchiridion-note-list">
+                            {{#each document.flags.enchiridion.notes}}
+                                <li class ="private-{{this.permissions.default}} enchiridion-note enchiridion-drop" data-drop-type="note">
+                                    <div class="enchiridion-note-content">{{{this.content}}}</div>
+                                    {{#if document.isOwner}}
+                                        <div>
+                                            {{#if ../../isGM}}<a class="fas fa-eye-slash enchiridion-hide-note" style="box-shadow: none;" title = "Hide From Players"></a>{{/if}}
+                                            <a class = "fas fa-times enchiridion-delete-note" title = "Delete"></a>
+                                        </div>
+                                    {{/if}}
+                                </li>
+                            {{/each}}
+                        </ul>
+                    </div>
+
+                    <div class="enchiridion-assets">
+                        <h2>Assets</h2>
+
+                        {{#if document.flags.enchiridion.assets}}
+                            <ul class="enchiridion-asset-list">
+                                {{#each document.flags.enchiridion.assets as |asset|}}
+                                    <li class="enchiridion-asset enchiridion-drop private-{{asset.permissions.default}} {{specialClass}}" data-drop-type="swap" data-tooltip="{{asset.name}}" data-name="{{asset.name}}" data-type='{{asset.type}}' data-id='{{asset.id}}' data-img = "{{asset.image}}">
+                                        <div class="crop asset-image">
+                                            <img class="enchiridion-asset-activate cover enchiridion-drag" src="{{asset.image}}" height="100%" width="100%" data-activation="0"/>
+                                        </div>
+                                        <input type="text" class="enchiridion-asset-name" value="{{asset.name}}" {{#if isGM}} readonly {{/if}}>
+                                        <div>
+                                            <a class="fas {{asset.icon1}} enchiridion-asset-activate" data-activation="1" title = "{{asset.name1}}"></a>
+                                            {{#if asset.icon2}}<a class="fas {{asset.icon2}} enchiridion-asset-activate" data-activation="2" title = "{{asset.name2}}"></a>{{/if}}
+                                            {{#if ../../isGM}}
+                                                <a class="fas fa-eye-slash enchiridion-asset-activate" data-activation="3" title = "Hide From Players"></a>
+                                                <a class="fas fa-times enchiridion-asset-activate" data-activation="4" title = "Remove Association"></a>
+                                            {{/if}}              
+                                        </div>
+                                    </li>
+                                {{/each}}
+                            {{!-- {{{document.enchiridionAssets}}} --}}
+                            </ul>
+                        {{/if}}
+                    </div>
+
+                    {{#if document.items}}
+                        <div class="enchiridion-items">
+                            <h2>Owned Items</h2>
+                            <ol class="enchiridion-item-list">
+                            {{#each document.items}}
+                                <li class="enchiridion-owned-item">
+                                    <img class="enchiridion-open-document item enchiridion-drag" src="{{this.img}}" data-uuid="{{this.uuid}}" height="30" width="30"/>
+                                    <div class="item-name">{{this.name}}</div>
+                                </li>
+                            {{/each}}
+                            </ol>
+                        </div>
+                    {{/if}}
+
+                </div>
+            {{/each}}
+        </section>
+    </main>
+                
+        </div>
+
+</form>

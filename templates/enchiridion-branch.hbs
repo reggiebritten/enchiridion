@@ -1,0 +1,38 @@
+
+{{#unless document.isCompendium}}
+    <li class="enchiridion-document enchiridion-branch {{document.enchiridionExpanded}} enchiridion-drop" data-drop-type="branch" data-uuid="{{document.uuid}}" data-sort="{{document.sort}}">
+        <hr>
+        <h4 class="enchiridion-branch-header branch-{{document.enchiridionActive}} {{document.type}}" data-uuid="{{document.uuid}}">
+            <div class = 'enchiridion-expand {{#if document.enchiridionChildren}}pointer{{/if}}'>
+                <span class="fas fa-chevron-right enchiridion-chevron" {{#unless document.enchiridionChildren}}style="display: none"{{/unless}}></span>
+            </div>
+            <div class = "icon enchiridion-icon enchiridion-icon-select"><a>{{document.enchiridionIcon}}</a></div>
+            <div class = 'enchiridion-branch-title enchiridion-drag enchiridion-open-tab'><a>{{document.name}}</a></div>
+            <div><a class="enchiridion-ownership">{{{document.enchiridionOwnership}}}</a></div>
+        </h4>
+        <ul class="enchiridion-children" {{#unless document.enchiridionExpanded}}style="display: none"{{/unless}}>
+            {{#each document.enchiridionChildren}}
+                    {{> "modules/enchiridion/templates/enchiridion-branch.hbs" document=this}}
+            {{/each}}
+        </ul>
+    </li>
+{{/unless}}
+{{#if document.isCompendium}}
+    <li class="enchiridion-document enchiridion-branch {{document.enchiridionExpanded}} compendium" data-pack-Id = "{{document.compendiumId}}" data-sort="{{document.sort}}">
+        <hr>
+        <h4 class="enchiridion-branch-header">
+            <div class = 'enchiridion-expand {{#if document.enchiridionChildren}}pointer{{/if}}'>
+                <span class="fas fa-chevron-right enchiridion-chevron" {{#unless document.enchiridionChildren}}style="display: none"{{/unless}}></span>
+            </div>
+            <div class = "icon enchiridion-icon enchiridion-icon-select"><span>{{document.enchiridionIcon}}</span></div>
+            <div class = 'enchiridion-branch-title'><span>{{document.compendiumName}}</span></div>
+            <div><a class="enchiridion-pack-ownership">{{{document.enchiridionOwnership}}}</a></div>
+        </h4>
+        <ul class="enchiridion-children" {{#unless document.enchiridionExpanded}}style="display: none"{{/unless}}>
+            {{#each document.enchiridionChildren}}
+                    {{> "modules/enchiridion/templates/enchiridion-branch.hbs" document=this}}
+            {{/each}}
+        </ul>
+    </li>
+
+{{/if}}
